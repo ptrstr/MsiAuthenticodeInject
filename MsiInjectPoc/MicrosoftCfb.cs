@@ -9,13 +9,18 @@ namespace MsiInjectPoc
 	{
 		private static bool _patched;
 
-		private readonly StorageInfo root;
+		private readonly StorageInfo _root;
 
-		private bool disposed;
+		private bool _disposed;
 
 		public MicrosoftCfb(string path)
 		{
-			this.root = StorageRoot.Open(path);
+			this._root = StorageRoot.Open(path);
+
+			if (this._root == null)
+			{
+				throw new ArgumentException();
+			}
 		}
 
 		~MicrosoftCfb()
@@ -23,28 +28,31 @@ namespace MsiInjectPoc
 			this.Dispose();
 		}
 
-		public StorageInfo GetSubStorageInfo(string name) => this.root.GetSubStorageInfo(name);
+		public StorageInfo GetSubStorageInfo(string name) => this._root.GetSubStorageInfo(name);
 
-		public StreamInfo GetStreamInfo(string name) => this.root.GetStreamInfo(name);
+		public StreamInfo GetStreamInfo(string name) => this._root.GetStreamInfo(name);
 
-		public StorageInfo[] GetSubStorages() => this.root.GetSubStorages();
+		public StorageInfo[] GetSubStorages() => this._root.GetSubStorages();
 
-		public StreamInfo[] GetStreams() => this.root.GetStreams();
+		public StreamInfo[] GetStreams() => this._root.GetStreams();
 
-		public void DeleteSubStorage(string name) => this.root.DeleteSubStorage(name);
+		public void DeleteSubStorage(string name) => this._root.DeleteSubStorage(name);
 
-		public void DeleteStream(string name) => this.root.DeleteStream(name);
+		public void DeleteStream(string name) => this._root.DeleteStream(name);
 
 		public void Dispose()
 		{
-			if (this.disposed)
+			if (this._disposed)
 			{
 				return;
 			}
 
-			this.disposed = true;
+			this._disposed = true;
 
-			StorageRoot.Close(this.root);
+			if (this._root != null)
+			{
+				StorageRoot.Close(this._root);
+			}
 		}
 
 		// https://referencesource.microsoft.com/#windowsbase/Base/System/IO/Packaging/CompoundFile/StorageInfo.cs,1381
