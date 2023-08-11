@@ -1,4 +1,4 @@
-# MsiInjectorPoc
+# MsiAuthenticodeInject
 
 This project demonstrates a proof of concept bypass to Microsoft's optional patch of CVE-2013-3900.
 
